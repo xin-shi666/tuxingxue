@@ -57,9 +57,11 @@ void CZBuffer::DrawTriangle(CDC* pDC, const CP3& p0, const CP3& p1, const CP3& p
         int x0 = (int)p0.x, y0 = (int)p0.y;
         int x1 = (int)p1.x, y1 = (int)p1.y;
         int x2 = (int)p2.x, y2 = (int)p2.y;
-        DrawLine(pDC, x0, y0, x1, y1, RGB(100, 200, 255));
-        DrawLine(pDC, x1, y1, x2, y2, RGB(100, 200, 255));
-        DrawLine(pDC, x2, y2, x0, y0, RGB(100, 200, 255));
+        CPen pen(PS_SOLID, 1, RGB(100, 200, 255));
+        CPen* oldPen = pDC->SelectObject(&pen);
+        pDC->MoveTo(x0, y0); pDC->LineTo(x1, y1);
+        pDC->LineTo(x2, y2); pDC->LineTo(x0, y0);
+        pDC->SelectObject(oldPen);
         return;
     }
 

@@ -67,7 +67,7 @@ void CRealisticRendererView::LoadObjFile(const CString& objPath) {
     delete m_pMesh;
     m_pMesh = new CMesh();
     m_pMesh->LoadFromRaw(raw);
-    m_pMesh->Simplify(60);
+    // Keep full mesh; for filled modes we sample faces in RenderScene
 
     CP3 center = m_pMesh->GetCenter();
     double radius = m_pMesh->GetRadius();
@@ -149,13 +149,29 @@ void CRealisticRendererView::RenderScene(CDC* pDC) {
     m_pMesh->ResetToOriginal();
     int vCount = m_pMesh->GetVertexCount();
     CP3* verts = m_pMesh->GetVertices();
+    CVector3* norms = m_pMesh->GetNormals();
 
-    // Rotate
+    // Build normal rotation matrix (same as vertex rotation)
     CTransform3 rotY, rotX;
     rotY.RotateY(m_angleY);
     rotX.RotateX(m_angleX);
+
+    // Rotate vertices
     rotY.MultiplyMatrix(verts, vCount);
     rotX.MultiplyMatrix(verts, vCount);
+
+    // Rotate normals (using same rotation, then re-normalize)
+    // Convert normals to CP3 for matrix multiplication
+    CP3* normCP3 = new CP3[vCount];
+    for (int i = 0; i < vCount; i++) {
+        normCP3[i] = CP3(norms[i].x, norms[i].y, norms[i].z);
+    }
+    rotY.MultiplyMatrix(normCP3, vCount);
+    rotX.MultiplyMatrix(normCP3, vCount);
+    for (int i = 0; i < vCount; i++) {
+        norms[i] = CVector3(normCP3[i].x, normCP3[i].y, normCP3[i].z).Normalize();
+    }
+    delete[] normCP3;
 
     // Copy transformed positions for lighting
     CP3* worldVerts = new CP3[vCount];
@@ -165,13 +181,17 @@ void CRealisticRendererView::RenderScene(CDC* pDC) {
     m_projection.PerspectiveProjection(verts, vCount);
 
     // Draw triangles
-    CVector3* norms = m_pMesh->GetNormals();
     double* texcoords = m_pMesh->GetTexcoords();
     BOOL hasTex = m_pMesh->HasTexcoords();
     int* indices = m_pMesh->GetFaceIndices();
     int fCount = m_pMesh->GetFaceCount();
 
     for (int i = 0; i < fCount; i++) {
+        // Face sampling for performance
+        int maxFaces = (m_mode == CZBuffer::WIREFRAME) ? 15000 : 5000;
+        if (fCount > maxFaces) {
+            if (i % (fCount / maxFaces) != 0) continue;
+        }
         int i0 = indices[i * 3], i1 = indices[i * 3 + 1], i2 = indices[i * 3 + 2];
         if (i0 >= vCount || i1 >= vCount || i2 >= vCount) continue;
 

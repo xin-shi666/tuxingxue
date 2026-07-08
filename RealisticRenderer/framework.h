@@ -20,5 +20,8 @@
 #define new DEBUG_NEW
 #endif
 
+#include <algorithm>
+#include <cmath>
+
 #undef min
 #undef max

@@ -47,7 +47,6 @@ public:
 private:
     void FillTriangle(CDC* pDC, const CPoint2& s0, const CPoint2& s1, const CPoint2& s2);
     void SortVertices(CPoint2& v0, CPoint2& v1, CPoint2& v2);
-    void EdgeFlag(CPoint2& start, CPoint2& end, double* span, int* spanScreen, int yStart, int yEnd, int totalLines);
 
     double** m_zBuffer;
     int m_width, m_height;

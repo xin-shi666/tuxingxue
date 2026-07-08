@@ -13,7 +13,6 @@ protected:
     DECLARE_DYNCREATE(CRealisticRendererView)
 
 public:
-    CRealisticRendererDoc* GetDocument() const;
     virtual void OnDraw(CDC* pDC);
     virtual void OnInitialUpdate();
     virtual ~CRealisticRendererView();

@@ -2,6 +2,7 @@
 #include "RealisticRendererView.h"
 #include "RealisticRendererDoc.h"
 #include "CObjLoader.h"
+#include "Resource.h"
 
 IMPLEMENT_DYNCREATE(CRealisticRendererView, CView)
 
@@ -33,26 +34,21 @@ CRealisticRendererView::~CRealisticRendererView() {
     delete m_pMesh;
 }
 
-CRealisticRendererDoc* CRealisticRendererView::GetDocument() const {
-    return dynamic_cast<CRealisticRendererDoc*>(m_pDocument);
-}
-
 void CRealisticRendererView::OnInitialUpdate() {
     CView::OnInitialUpdate();
     SetTimer(TIMER_ID, 50, nullptr);
 
-    // Auto-load model from known path
-    wchar_t exePath[MAX_PATH];
-    GetModuleFileName(nullptr, exePath, MAX_PATH);
-    CString path = exePath;
-    int pos = path.ReverseFind(L'\\');
-    if (pos >= 0) path = path.Left(pos);
-    pos = path.ReverseFind(L'\\');
-    if (pos >= 0) path = path.Left(pos);
-
-    CString objPath = path + L"\\海绵宝宝\\tripo_convert_6d23d57d-9d66-40ea-b55a-d3fba1d73181.obj";
-    if (GetFileAttributes(objPath) != INVALID_FILE_ATTRIBUTES) {
-        LoadObjFile(objPath);
+    // Try loading model from common locations
+    CString paths[] = {
+        L"..\\..\\海绵宝宝\\tripo_convert_6d23d57d-9d66-40ea-b55a-d3fba1d73181.obj",
+        L"..\\海绵宝宝\\tripo_convert_6d23d57d-9d66-40ea-b55a-d3fba1d73181.obj",
+        L"海绵宝宝\\tripo_convert_6d23d57d-9d66-40ea-b55a-d3fba1d73181.obj",
+    };
+    for (const auto& p : paths) {
+        if (GetFileAttributes(p) != INVALID_FILE_ATTRIBUTES) {
+            LoadObjFile(p);
+            break;
+        }
     }
 }
 
@@ -63,7 +59,7 @@ void CRealisticRendererView::LoadObjFile(const CString& objPath) {
 
     CObjLoader loader;
     CObjLoader::RawData raw;
-    if (!loader.Load(objPath, &raw)) {
+    if (!loader.Load(objPath, raw)) {
         AfxMessageBox(L"Failed to load OBJ file.");
         return;
     }

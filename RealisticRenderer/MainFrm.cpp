@@ -17,12 +17,5 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs) {
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     if (CFrameWndEx::OnCreate(lpCreateStruct) == -1) return -1;
-
-    m_wndMenuBar.Create(this);
-    m_wndMenuBar.LoadMenu(IDR_MAINFRAME);
-
-    m_wndStatusBar.Create(this);
-    m_wndStatusBar.SetIndicators(nullptr, 0);
-
     return 0;
 }

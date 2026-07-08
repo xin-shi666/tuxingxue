@@ -4,7 +4,8 @@
 CObjLoader::CObjLoader() : m_lastError(L"") {}
 
 BOOL CObjLoader::Load(const wchar_t* filename, RawData& outData) {
-    FILE* fp = _wfopen(filename, L"rb");
+    FILE* fp = nullptr;
+    _wfopen_s(&fp, filename, L"rb");
     if (!fp) { m_lastError = L"Failed to open file"; return FALSE; }
 
     outData.vertices.clear();

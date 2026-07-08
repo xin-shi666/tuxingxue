@@ -10,7 +10,4 @@ public:
 protected:
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     DECLARE_MESSAGE_MAP()
-private:
-    CMFCMenuBar m_wndMenuBar;
-    CMFCStatusBar m_wndStatusBar;
 };

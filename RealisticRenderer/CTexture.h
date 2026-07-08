@@ -1,4 +1,5 @@
 #pragma once
+#include "CRGB.h"
 
 class CTexture {
 public:

@@ -26,6 +26,7 @@ public:
     void ApplySimplification(int gridSize);
     void SetAnimRotation(float rx, float ry, float rz);
 
+    DECLARE_DYNCREATE(CRealisticRendererDoc)
     DECLARE_MESSAGE_MAP()
 
 private:

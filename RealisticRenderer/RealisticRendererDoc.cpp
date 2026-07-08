@@ -2,6 +2,8 @@
 #include "RealisticRendererDoc.h"
 #include "ObjLoader.h"
 
+IMPLEMENT_DYNCREATE(CRealisticRendererDoc, CDocument)
+
 BEGIN_MESSAGE_MAP(CRealisticRendererDoc, CDocument)
 END_MESSAGE_MAP()
 

@@ -9,6 +9,7 @@ public:
     void StopAnimation();
     bool IsAnimating() const { return m_animating; }
 
+    DECLARE_DYNCREATE(CRealisticRendererView)
     DECLARE_MESSAGE_MAP()
 
 protected:

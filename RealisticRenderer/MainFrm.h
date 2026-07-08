@@ -6,6 +6,7 @@ public:
     CMainFrame();
     virtual ~CMainFrame();
 
+    DECLARE_DYNCREATE(CMainFrame)
     DECLARE_MESSAGE_MAP()
 
 protected:

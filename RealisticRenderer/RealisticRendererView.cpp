@@ -2,6 +2,8 @@
 #include "RealisticRendererView.h"
 #include "RealisticRendererDoc.h"
 
+IMPLEMENT_DYNCREATE(CRealisticRendererView, CView)
+
 BEGIN_MESSAGE_MAP(CRealisticRendererView, CView)
     ON_WM_SIZE()
     ON_WM_TIMER()

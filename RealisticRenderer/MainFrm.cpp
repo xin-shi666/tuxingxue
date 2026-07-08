@@ -3,6 +3,8 @@
 #include "RealisticRendererDoc.h"
 #include "RealisticRendererView.h"
 
+IMPLEMENT_DYNCREATE(CMainFrame, CFrameWndEx)
+
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
     ON_WM_CREATE()
     ON_COMMAND(IDM_VIEW_WIREFRAME, OnViewWireframe)

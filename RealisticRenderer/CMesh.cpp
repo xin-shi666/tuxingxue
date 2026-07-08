@@ -96,8 +96,10 @@ void CMesh::Simplify(int gridSize) {
 
     // Accumulate vertex positions per grid cell
     std::unordered_map<long long, double> sumX, sumY, sumZ;
+    std::unordered_map<long long, double> sumU, sumV;
     std::unordered_map<long long, int> counts;
     std::vector<long long> cellKeys(m_vertexCount);
+    BOOL hasUV = m_hasTex && m_texcoords != nullptr;
 
     for (int i = 0; i < m_vertexCount; i++) {
         int cx = (int)((m_vertices[i].x - minX) / rangeX * gridSize);
@@ -111,6 +113,10 @@ void CMesh::Simplify(int gridSize) {
         sumX[key] += m_vertices[i].x;
         sumY[key] += m_vertices[i].y;
         sumZ[key] += m_vertices[i].z;
+        if (hasUV) {
+            sumU[key] += m_texcoords[i * 2];
+            sumV[key] += m_texcoords[i * 2 + 1];
+        }
         counts[key]++;
     }
 
@@ -124,6 +130,7 @@ void CMesh::Simplify(int gridSize) {
 
     CP3* newVerts = new CP3[newVC];
     double* newWorld = new double[newVC * 3];
+    double* newTex = hasUV ? new double[newVC * 2] : nullptr;
     for (auto& kv : counts) {
         long long key = kv.first;
         int idx = keyToNewIdx[key];
@@ -132,6 +139,10 @@ void CMesh::Simplify(int gridSize) {
         newWorld[idx * 3] = newVerts[idx].x;
         newWorld[idx * 3 + 1] = newVerts[idx].y;
         newWorld[idx * 3 + 2] = newVerts[idx].z;
+        if (hasUV) {
+            newTex[idx * 2] = sumU[key] / cnt;
+            newTex[idx * 2 + 1] = sumV[key] / cnt;
+        }
     }
 
     // Remap faces (remove degenerate ones)
@@ -155,6 +166,8 @@ void CMesh::Simplify(int gridSize) {
     m_vertices = newVerts;
     m_worldPos = newWorld;
     m_normals = new CVector3[newVC];
+    m_texcoords = newTex;
+    m_hasTex = hasUV;
     m_vertexCount = newVC;
     m_faces = std::move(newFaces);
     m_faceIndices = new int[m_faces.size() * 3];
@@ -163,7 +176,6 @@ void CMesh::Simplify(int gridSize) {
         m_faceIndices[i * 3 + 1] = m_faces[i].v[1];
         m_faceIndices[i * 3 + 2] = m_faces[i].v[2];
     }
-    m_hasTex = FALSE;
     ComputeNormals();
 }
 

@@ -2,8 +2,11 @@
 #include "CLighting.h"
 
 CLighting::CLighting() : nLightNumber(1), LightSource(nullptr) {
-    Ambient = CRGB(0.2, 0.2, 0.2);
+    Ambient = CRGB(0.35, 0.35, 0.40);
     LightSource = new CLightSource[nLightNumber];
+    LightSource[0].SetPosition(2, 3, 4);
+    LightSource[0].SetDiffuse(1.0, 1.0, 0.95);
+    LightSource[0].SetSpecular(1.0, 1.0, 1.0);
 }
 
 CLighting::~CLighting() {

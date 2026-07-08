@@ -1,51 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="stdafx.h"><Filter>MFC</Filter></ClInclude>
+    <Filter Include="MFC"><UniqueIdentifier>{A1B2C3D4-E5F6-7890-0001-EF1234567890}</UniqueIdentifier></Filter>
+    <Filter Include="Engine"><UniqueIdentifier>{A1B2C3D4-E5F6-7890-0002-EF1234567890}</UniqueIdentifier></Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h"><Filter>MFC</Filter></ClInclude>
+    <ClInclude Include="pch.h"><Filter>MFC</Filter></ClInclude>
     <ClInclude Include="targetver.h"><Filter>MFC</Filter></ClInclude>
     <ClInclude Include="Resource.h"><Filter>MFC</Filter></ClInclude>
     <ClInclude Include="RealisticRenderer.h"><Filter>MFC</Filter></ClInclude>
     <ClInclude Include="MainFrm.h"><Filter>MFC</Filter></ClInclude>
     <ClInclude Include="RealisticRendererDoc.h"><Filter>MFC</Filter></ClInclude>
     <ClInclude Include="RealisticRendererView.h"><Filter>MFC</Filter></ClInclude>
-    <ClInclude Include="ControlPanel.h"><Filter>MFC</Filter></ClInclude>
-    <ClInclude Include="Vertex.h"><Filter>Engine</Filter></ClInclude>
-    <ClInclude Include="Transform.h"><Filter>Engine</Filter></ClInclude>
-    <ClInclude Include="Projection.h"><Filter>Engine</Filter></ClInclude>
-    <ClInclude Include="ZBuffer.h"><Filter>Engine</Filter></ClInclude>
-    <ClInclude Include="Camera.h"><Filter>Engine</Filter></ClInclude>
-    <ClInclude Include="LightSource.h"><Filter>Engine</Filter></ClInclude>
-    <ClInclude Include="Material.h"><Filter>Engine</Filter></ClInclude>
-    <ClInclude Include="Lighting.h"><Filter>Engine</Filter></ClInclude>
-    <ClInclude Include="Texture.h"><Filter>Engine</Filter></ClInclude>
-    <ClInclude Include="ObjLoader.h"><Filter>Engine</Filter></ClInclude>
-    <ClInclude Include="Mesh.h"><Filter>Engine</Filter></ClInclude>
-    <ClInclude Include="Renderer.h"><Filter>Engine</Filter></ClInclude>
+    <ClInclude Include="CRGB.h"><Filter>Engine</Filter></ClInclude>
+    <ClInclude Include="CP3.h"><Filter>Engine</Filter></ClInclude>
+    <ClInclude Include="CVector3.h"><Filter>Engine</Filter></ClInclude>
+    <ClInclude Include="CTransform3.h"><Filter>Engine</Filter></ClInclude>
+    <ClInclude Include="CProjection.h"><Filter>Engine</Filter></ClInclude>
+    <ClInclude Include="CLightSource.h"><Filter>Engine</Filter></ClInclude>
+    <ClInclude Include="CMaterial.h"><Filter>Engine</Filter></ClInclude>
+    <ClInclude Include="CLighting.h"><Filter>Engine</Filter></ClInclude>
+    <ClInclude Include="CTexture.h"><Filter>Engine</Filter></ClInclude>
+    <ClInclude Include="CObjLoader.h"><Filter>Engine</Filter></ClInclude>
+    <ClInclude Include="CMesh.h"><Filter>Engine</Filter></ClInclude>
+    <ClInclude Include="CZBuffer.h"><Filter>Engine</Filter></ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp"><Filter>MFC</Filter></ClCompile>
+    <ClCompile Include="pch.cpp"><Filter>MFC</Filter></ClCompile>
     <ClCompile Include="RealisticRenderer.cpp"><Filter>MFC</Filter></ClCompile>
     <ClCompile Include="MainFrm.cpp"><Filter>MFC</Filter></ClCompile>
     <ClCompile Include="RealisticRendererDoc.cpp"><Filter>MFC</Filter></ClCompile>
     <ClCompile Include="RealisticRendererView.cpp"><Filter>MFC</Filter></ClCompile>
-    <ClCompile Include="ControlPanel.cpp"><Filter>MFC</Filter></ClCompile>
-    <ClCompile Include="Transform.cpp"><Filter>Engine</Filter></ClCompile>
-    <ClCompile Include="Projection.cpp"><Filter>Engine</Filter></ClCompile>
-    <ClCompile Include="ZBuffer.cpp"><Filter>Engine</Filter></ClCompile>
-    <ClCompile Include="Camera.cpp"><Filter>Engine</Filter></ClCompile>
-    <ClCompile Include="LightSource.cpp"><Filter>Engine</Filter></ClCompile>
-    <ClCompile Include="Material.cpp"><Filter>Engine</Filter></ClCompile>
-    <ClCompile Include="Lighting.cpp"><Filter>Engine</Filter></ClCompile>
-    <ClCompile Include="Texture.cpp"><Filter>Engine</Filter></ClCompile>
-    <ClCompile Include="ObjLoader.cpp"><Filter>Engine</Filter></ClCompile>
-    <ClCompile Include="Mesh.cpp"><Filter>Engine</Filter></ClCompile>
-    <ClCompile Include="Renderer.cpp"><Filter>Engine</Filter></ClCompile>
+    <ClCompile Include="CTransform3.cpp"><Filter>Engine</Filter></ClCompile>
+    <ClCompile Include="CProjection.cpp"><Filter>Engine</Filter></ClCompile>
+    <ClCompile Include="CLightSource.cpp"><Filter>Engine</Filter></ClCompile>
+    <ClCompile Include="CMaterial.cpp"><Filter>Engine</Filter></ClCompile>
+    <ClCompile Include="CLighting.cpp"><Filter>Engine</Filter></ClCompile>
+    <ClCompile Include="CTexture.cpp"><Filter>Engine</Filter></ClCompile>
+    <ClCompile Include="CObjLoader.cpp"><Filter>Engine</Filter></ClCompile>
+    <ClCompile Include="CMesh.cpp"><Filter>Engine</Filter></ClCompile>
+    <ClCompile Include="CZBuffer.cpp"><Filter>Engine</Filter></ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RealisticRenderer.rc"><Filter>MFC</Filter></ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="MFC"><UniqueIdentifier>{B1C2D3E4-F5A6-7890-BCDE-F12345678901}</UniqueIdentifier></Filter>
-    <Filter Include="Engine"><UniqueIdentifier>{C2D3E4F5-A6B7-8901-CDEF-123456789012}</UniqueIdentifier></Filter>
   </ItemGroup>
 </Project>

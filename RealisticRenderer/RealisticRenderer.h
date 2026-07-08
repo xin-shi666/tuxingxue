@@ -1,11 +1,11 @@
 #pragma once
-#include "Resource.h"
+#include "resource.h"
 
 class CRealisticRendererApp : public CWinAppEx {
 public:
-    CRealisticRendererApp();
+    CRealisticRendererApp() noexcept;
     virtual BOOL InitInstance();
     virtual int ExitInstance();
-
+    afx_msg void OnAppAbout();
     DECLARE_MESSAGE_MAP()
 };

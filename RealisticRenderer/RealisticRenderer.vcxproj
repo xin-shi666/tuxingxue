@@ -37,7 +37,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -52,7 +52,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -65,29 +65,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="pch.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RealisticRenderer.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="RealisticRendererDoc.h" />
     <ClInclude Include="RealisticRendererView.h" />
-    <ClInclude Include="ControlPanel.h" />
-    <ClInclude Include="Vertex.h" />
-    <ClInclude Include="Transform.h" />
-    <ClInclude Include="Projection.h" />
-    <ClInclude Include="ZBuffer.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="LightSource.h" />
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="Lighting.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="ObjLoader.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="CRGB.h" />
+    <ClInclude Include="CP3.h" />
+    <ClInclude Include="CVector3.h" />
+    <ClInclude Include="CTransform3.h" />
+    <ClInclude Include="CProjection.h" />
+    <ClInclude Include="CLightSource.h" />
+    <ClInclude Include="CMaterial.h" />
+    <ClInclude Include="CLighting.h" />
+    <ClInclude Include="CTexture.h" />
+    <ClInclude Include="CObjLoader.h" />
+    <ClInclude Include="CMesh.h" />
+    <ClInclude Include="CZBuffer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
@@ -95,18 +95,15 @@
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="RealisticRendererDoc.cpp" />
     <ClCompile Include="RealisticRendererView.cpp" />
-    <ClCompile Include="ControlPanel.cpp" />
-    <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="Projection.cpp" />
-    <ClCompile Include="ZBuffer.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="LightSource.cpp" />
-    <ClCompile Include="Material.cpp" />
-    <ClCompile Include="Lighting.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="ObjLoader.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="CTransform3.cpp" />
+    <ClCompile Include="CProjection.cpp" />
+    <ClCompile Include="CLightSource.cpp" />
+    <ClCompile Include="CMaterial.cpp" />
+    <ClCompile Include="CLighting.cpp" />
+    <ClCompile Include="CTexture.cpp" />
+    <ClCompile Include="CObjLoader.cpp" />
+    <ClCompile Include="CMesh.cpp" />
+    <ClCompile Include="CZBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RealisticRenderer.rc" />

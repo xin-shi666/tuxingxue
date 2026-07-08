@@ -1,30 +1,26 @@
-#include "stdafx.h"
+#include "pch.h"
 #include "RealisticRenderer.h"
 #include "MainFrm.h"
 #include "RealisticRendererDoc.h"
 #include "RealisticRendererView.h"
 
 BEGIN_MESSAGE_MAP(CRealisticRendererApp, CWinAppEx)
-    ON_COMMAND(ID_FILE_NEW, CWinAppEx::OnFileNew)
-    ON_COMMAND(ID_FILE_OPEN, CWinAppEx::OnFileOpen)
+    ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
 END_MESSAGE_MAP()
 
-CRealisticRendererApp::CRealisticRendererApp() {}
+CRealisticRendererApp::CRealisticRendererApp() noexcept {}
 
 CRealisticRendererApp theApp;
 
-static ULONG_PTR g_gdiplusToken = 0;
-
 BOOL CRealisticRendererApp::InitInstance() {
-    // Initialize GDI+
-    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-    Gdiplus::GdiplusStartup(&g_gdiplusToken, &gdiplusStartupInput, nullptr);
+    // GDI+ initialization
+    ULONG_PTR gdiToken;
+    Gdiplus::GdiplusStartupInput gdiInput;
+    Gdiplus::GdiplusStartup(&gdiToken, &gdiInput, nullptr);
 
-    // Initialize MFC Feature Pack
     CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
     InitCommonControls();
     CWinAppEx::InitInstance();
-
     SetRegistryKey(L"RealisticRenderer");
 
     CSingleDocTemplate* pDocTemplate = new CSingleDocTemplate(
@@ -38,34 +34,27 @@ BOOL CRealisticRendererApp::InitInstance() {
     ParseCommandLine(cmdInfo);
     if (!ProcessShellCommand(cmdInfo)) return FALSE;
 
-    // Auto-load model
-    CRealisticRendererDoc* pDoc = dynamic_cast<CRealisticRendererDoc*>(
-        ((CFrameWnd*)m_pMainWnd)->GetActiveDocument());
-    if (pDoc) {
-        wchar_t exePath[MAX_PATH];
-        GetModuleFileName(nullptr, exePath, MAX_PATH);
-        CString exeDir = exePath;
-        int pos = exeDir.ReverseFind(L'\\');
-        if (pos >= 0) exeDir = exeDir.Left(pos); // bin dir
-        pos = exeDir.ReverseFind(L'\\');
-        if (pos >= 0) exeDir = exeDir.Left(pos); // project root
-
-        CString objPath = exeDir + L"\\海绵宝宝\\tripo_convert_6d23d57d-9d66-40ea-b55a-d3fba1d73181.obj";
-        CString texPath = exeDir + L"\\海绵宝宝\\海绵宝宝3d模型_basecolor_2k.JPEG";
-
-        if (GetFileAttributes(objPath) != INVALID_FILE_ATTRIBUTES) {
-            pDoc->LoadModel(objPath);
-            if (GetFileAttributes(texPath) != INVALID_FILE_ATTRIBUTES)
-                pDoc->LoadTexture(texPath);
-        }
-    }
-
     m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
     m_pMainWnd->UpdateWindow();
     return TRUE;
 }
 
 int CRealisticRendererApp::ExitInstance() {
-    Gdiplus::GdiplusShutdown(g_gdiplusToken);
     return CWinAppEx::ExitInstance();
+}
+
+// About dialog
+class CAboutDlg : public CDialogEx {
+public:
+    CAboutDlg() : CDialogEx(IDD_ABOUTBOX) {}
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX) { CDialogEx::DoDataExchange(pDX); }
+    DECLARE_MESSAGE_MAP()
+};
+BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+END_MESSAGE_MAP()
+
+void CRealisticRendererApp::OnAppAbout() {
+    CAboutDlg aboutDlg;
+    aboutDlg.DoModal();
 }

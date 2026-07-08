@@ -1,28 +1,16 @@
 #pragma once
-#include "ControlPanel.h"
 
 class CMainFrame : public CFrameWndEx {
-public:
-    CMainFrame();
-    virtual ~CMainFrame();
-
-    DECLARE_DYNCREATE(CMainFrame)
-    DECLARE_MESSAGE_MAP()
-
 protected:
-    virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
+    CMainFrame() noexcept;
+    DECLARE_DYNCREATE(CMainFrame)
+public:
+    virtual ~CMainFrame();
+    virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+protected:
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-    afx_msg void OnViewWireframe();
-    afx_msg void OnViewFlat();
-    afx_msg void OnViewGouraud();
-    afx_msg void OnViewTexture();
-    afx_msg void OnToggleControlPanel();
-    afx_msg void OnAnimationStart();
-    afx_msg void OnAnimationStop();
-    afx_msg void OnUpdateAnimStart(CCmdUI* pCmdUI);
-    afx_msg void OnUpdateAnimStop(CCmdUI* pCmdUI);
-
+    DECLARE_MESSAGE_MAP()
 private:
-    CMFCMenuBar m_menuBar;
-    CControlPanel* m_pControlPanel;
+    CMFCMenuBar m_wndMenuBar;
+    CMFCStatusBar m_wndStatusBar;
 };

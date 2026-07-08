@@ -67,7 +67,9 @@ void CRealisticRendererView::LoadObjFile(const CString& objPath) {
     delete m_pMesh;
     m_pMesh = new CMesh();
     m_pMesh->LoadFromRaw(raw);
-    // Keep full mesh; for filled modes we sample faces in RenderScene
+    m_pMesh->Simplify(35); // ~10K-30K faces for usable filled rendering
+
+    TRACE(L"Mesh: %d vertices, %d faces\n", m_pMesh->GetVertexCount(), m_pMesh->GetFaceCount());
 
     CP3 center = m_pMesh->GetCenter();
     double radius = m_pMesh->GetRadius();
@@ -187,11 +189,6 @@ void CRealisticRendererView::RenderScene(CDC* pDC) {
     int fCount = m_pMesh->GetFaceCount();
 
     for (int i = 0; i < fCount; i++) {
-        // Face sampling for performance
-        int maxFaces = (m_mode == CZBuffer::WIREFRAME) ? 15000 : 5000;
-        if (fCount > maxFaces) {
-            if (i % (fCount / maxFaces) != 0) continue;
-        }
         int i0 = indices[i * 3], i1 = indices[i * 3 + 1], i2 = indices[i * 3 + 2];
         if (i0 >= vCount || i1 >= vCount || i2 >= vCount) continue;
 

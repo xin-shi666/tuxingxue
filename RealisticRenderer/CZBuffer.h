@@ -38,9 +38,6 @@ public:
                       const CP3& wp0, const CP3& wp1, const CP3& wp2,
                       double u0, double v0, double u1, double v1, double u2, double v2);
 
-    // Draw a line
-    void DrawLine(CDC* pDC, int x0, int y0, int x1, int y1, COLORREF color);
-
     int GetWidth() const { return m_width; }
     int GetHeight() const { return m_height; }
 

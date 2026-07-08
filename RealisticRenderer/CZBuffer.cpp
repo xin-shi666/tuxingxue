@@ -18,29 +18,14 @@ void CZBuffer::InitBuffer(int w, int h) {
     }
     m_width = w; m_height = h;
     m_zBuffer = new double*[m_height];
-    for (int i = 0; i < m_height; i++) {
+    for (int i = 0; i < m_height; i++)
         m_zBuffer[i] = new double[m_width];
-    }
 }
 
 void CZBuffer::ClearBuffer() {
     for (int y = 0; y < m_height; y++)
         for (int x = 0; x < m_width; x++)
             m_zBuffer[y][x] = 1e30;
-}
-
-void CZBuffer::DrawLine(CDC* pDC, int x0, int y0, int x1, int y1, COLORREF color) {
-    int dx = abs(x1 - x0), dy = -abs(y1 - y0);
-    int sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
-    int err = dx + dy;
-    while (true) {
-        if (x0 >= 0 && x0 < m_width && y0 >= 0 && y0 < m_height)
-            pDC->SetPixel(x0, y0, color);
-        if (x0 == x1 && y0 == y1) break;
-        int e2 = 2 * err;
-        if (e2 >= dy) { err += dy; x0 += sx; }
-        if (e2 <= dx) { err += dx; y0 += sy; }
-    }
 }
 
 void CZBuffer::SortVertices(CPoint2& v0, CPoint2& v1, CPoint2& v2) {
@@ -57,7 +42,7 @@ void CZBuffer::DrawTriangle(CDC* pDC, const CP3& p0, const CP3& p1, const CP3& p
         int x0 = (int)p0.x, y0 = (int)p0.y;
         int x1 = (int)p1.x, y1 = (int)p1.y;
         int x2 = (int)p2.x, y2 = (int)p2.y;
-        CPen pen(PS_SOLID, 1, RGB(100, 200, 255));
+        CPen pen(PS_SOLID, 1, RGB(0, 220, 255));
         CPen* oldPen = pDC->SelectObject(&pen);
         pDC->MoveTo(x0, y0); pDC->LineTo(x1, y1);
         pDC->LineTo(x2, y2); pDC->LineTo(x0, y0);
@@ -65,6 +50,7 @@ void CZBuffer::DrawTriangle(CDC* pDC, const CP3& p0, const CP3& p1, const CP3& p
         return;
     }
 
+    // Back-face culling
     double area = (p1.x - p0.x) * (p2.y - p0.y) - (p2.x - p0.x) * (p1.y - p0.y);
     if (area <= 0) return;
 
@@ -83,99 +69,54 @@ void CZBuffer::DrawTriangle(CDC* pDC, const CP3& p0, const CP3& p1, const CP3& p
         CVector3 e1(wp1.x - wp0.x, wp1.y - wp0.y, wp1.z - wp0.z);
         CVector3 e2(wp2.x - wp0.x, wp2.y - wp0.y, wp2.z - wp0.z);
         CVector3 fn = e1.Cross(e2).Normalize();
-        CRGB fc2 = m_pLighting->Illuminate(m_ViewPoint, fc, fn, m_pMaterial);
-        s0.c = s1.c = s2.c = fc2;
+        s0.c = s1.c = s2.c = m_pLighting->Illuminate(m_ViewPoint, fc, fn, m_pMaterial);
     } else if (m_mode == GOURAUD) {
         s0.c = m_pLighting->Illuminate(m_ViewPoint, wp0, n0, m_pMaterial);
         s1.c = m_pLighting->Illuminate(m_ViewPoint, wp1, n1, m_pMaterial);
         s2.c = m_pLighting->Illuminate(m_ViewPoint, wp2, n2, m_pMaterial);
     }
 
-    SortVertices(s0, s1, s2);
     FillTriangle(pDC, s0, s1, s2);
 }
 
-static void AddSpanEdge(int yMin, int yMax, const CPoint2& a, const CPoint2& b,
-                        double* spanL, double* spanR, int totalLines) {
-    int yA = a.y, yB = b.y;
-    if (yA > yB) { AddSpanEdge(yMin, yMax, b, a, spanL, spanR, totalLines); return; }
-    if (yA >= yMax || yB < yMin) return;
-    double dy = (double)(yB - yA);
-    if (fabs(dy) < 0.001) return;
-    double invDy = 1.0 / dy;
-    int ys = (std::max)(yMin, yA);
-    int ye = (std::min)(yMax, yB);
-    for (int y = ys; y <= ye; y++) {
-        double t = (y - a.y) * invDy;
-        int idx = y - yMin;
-        double x = a.x + (b.x - a.x) * t;
-        double z = a.z + (b.z - a.z) * t;
-        if (x < spanL[idx * 4]) {
-            spanL[idx * 4] = x;
-            spanL[idx * 4 + 1] = z;
-            spanL[idx * 4 + 2] = t;
-        }
-        if (x > spanR[idx * 4]) {
-            spanR[idx * 4] = x;
-            spanR[idx * 4 + 1] = z;
-            spanR[idx * 4 + 2] = t;
-        }
-    }
-}
+void CZBuffer::FillTriangle(CDC* pDC, const CPoint2& v0, const CPoint2& v1, const CPoint2& v2) {
+    // Bounding box
+    int xMin = (std::max)(0, (std::min)({v0.x, v1.x, v2.x}));
+    int xMax = (std::min)(m_width - 1, (std::max)({v0.x, v1.x, v2.x}));
+    int yMin = (std::max)(0, (std::min)({v0.y, v1.y, v2.y}));
+    int yMax = (std::min)(m_height - 1, (std::max)({v0.y, v1.y, v2.y}));
+    if (xMin > xMax || yMin > yMax) return;
 
-void CZBuffer::FillTriangle(CDC* pDC, const CPoint2& s0, const CPoint2& s1, const CPoint2& s2) {
-    int yMin = (std::max)(0, s0.y);
-    int yMax = (std::min)(m_height - 1, s2.y);
-    if (yMin > yMax) return;
+    // Barycentric denominator
+    double denom = (v1.y - v2.y) * (v0.x - v2.x) + (v2.x - v1.x) * (v0.y - v2.y);
+    if (fabs(denom) < 1e-12) return;
+    double invDenom = 1.0 / denom;
 
-    int totalLines = yMax - yMin + 1;
-    double* spanL = new double[totalLines * 4];
-    double* spanR = new double[totalLines * 4];
+    for (int y = yMin; y <= yMax; y++) {
+        for (int x = xMin; x <= xMax; x++) {
+            // Barycentric coordinates
+            double alpha = ((v1.y - v2.y) * (x - v2.x) + (v2.x - v1.x) * (y - v2.y)) * invDenom;
+            double beta  = ((v2.y - v0.y) * (x - v2.x) + (v0.x - v2.x) * (y - v2.y)) * invDenom;
+            double gamma = 1.0 - alpha - beta;
+            if (alpha < -1e-8 || beta < -1e-8 || gamma < -1e-8) continue;
 
-    for (int i = 0; i < totalLines; i++) {
-        spanL[i * 4] = 1e30; spanR[i * 4] = -1e30;
-    }
-
-    AddSpanEdge(yMin, yMax, s0, s1, spanL, spanR, totalLines);
-    AddSpanEdge(yMin, yMax, s1, s2, spanL, spanR, totalLines);
-    AddSpanEdge(yMin, yMax, s0, s2, spanL, spanR, totalLines);
-
-    for (int i = 0; i < totalLines; i++) {
-        int y = yMin + i;
-        int xL = (int)ceil(spanL[i * 4]);
-        int xR = (int)floor(spanR[i * 4]);
-        if (xL > xR) continue;
-        xL = (std::max)(0, xL);
-        xR = (std::min)(m_width - 1, xR);
-        if (xL > xR) continue;
-
-        double dx = (double)(xR - xL);
-        if (dx < 0.001) dx = 1.0;
-
-        for (int x = xL; x <= xR; x++) {
-            double t = (x - xL) / dx;
-            double z = spanL[i * 4 + 1] + (spanR[i * 4 + 1] - spanL[i * 4 + 1]) * t;
-            if (z >= m_zBuffer[y][x]) continue;
+            // Depth interpolation
+            double z = alpha * v0.z + beta * v1.z + gamma * v2.z;
+            if (z < 0 || z >= m_zBuffer[y][x]) continue;
             m_zBuffer[y][x] = z;
 
-            double tL = spanL[i * 4 + 2];
-            double tR = spanR[i * 4 + 2];
-
+            CRGB color;
             if (m_mode == TEXTURE && m_pTexture && m_pTexture->IsLoaded()) {
-                double u = s0.u + (s2.u - s0.u) * (tL + (tR - tL) * t);
-                double v = s0.v + (s2.v - s0.v) * (tL + (tR - tL) * t);
-                CRGB tc = m_pTexture->Sample(u, v);
-                tc.Normalize();
-                pDC->SetPixel(x, y, tc.ToCOLORREF());
+                double u = alpha * v0.u + beta * v1.u + gamma * v2.u;
+                double v = alpha * v0.v + beta * v1.v + gamma * v2.v;
+                color = m_pTexture->Sample(u, v);
             } else {
-                CRGB cL = s0.c + (s2.c - s0.c) * tL;
-                CRGB cR = s0.c + (s2.c - s0.c) * tR;
-                CRGB c = cL + (cR - cL) * t;
-                c.Normalize();
-                pDC->SetPixel(x, y, c.ToCOLORREF());
+                color.r = alpha * v0.c.r + beta * v1.c.r + gamma * v2.c.r;
+                color.g = alpha * v0.c.g + beta * v1.c.g + gamma * v2.c.g;
+                color.b = alpha * v0.c.b + beta * v1.c.b + gamma * v2.c.b;
             }
+            color.Normalize();
+            pDC->SetPixel(x, y, color.ToCOLORREF());
         }
     }
-
-    delete[] spanL; delete[] spanR;
 }

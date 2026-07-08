@@ -72,7 +72,8 @@ void CRealisticRendererView::LoadObjFile(const CString& objPath) {
     CP3 center = m_pMesh->GetCenter();
     double radius = m_pMesh->GetRadius();
     m_projection.SetEye(center.x, center.y + radius * 0.3, center.z + radius * 2.0);
-    m_projection.SetViewDistance(radius * 3);
+    // view distance should be much larger than model size
+    m_projection.SetViewDistance((std::max)(500.0, radius * 500));
     m_viewPoint = m_projection.GetEye();
 
     // Auto-find texture in same directory
